@@ -26,123 +26,166 @@ else
 		MK_DIR = mkdir -p
 	endif
 endif
+MK_DIR = mkdir -p
+VENDOR = microchip
+CHIP_FAMILY = samd
 
 # List the subdirectories for creating object files
 SUB_DIRS +=  \
  \
-hpl/adc \
-hal/src \
-examples \
 gcc \
-usb \
-hpl/dmac \
-usb/class/cdc/device \
-hal/utils/src \
-hpl/wdt \
-hpl/rtc \
-usb/class/hid/device \
 hpl/usb \
+hpl/dmac \
+hal/src \
 hpl/pm \
 hpl/sysctrl \
+hal/utils/src \
+hpl/sercom \
+examples \
 hpl/gclk \
 gcc/gcc \
-usb/device \
-hpl/dac \
-usb/class/vendor/device \
-hpl/sercom \
 hpl/core \
-usb/class/msc/device
+tinyusb \
+tinyusb/src \
+tinyusb/src/common \
+tinyusb/src/device \
+tinyusb/src/class/audio \
+tinyusb/src/class/cdc \
+tinyusb/src/class/dfu \
+tinyusb/src/class/hid \
+tinyusb/src/class/midi \
+tinyusb/src/class/msc \
+tinyusb/src/class/net \
+tinyusb/src/class/usbtmc \
+tinyusb/src/class/vendor \
+tinyusb/src/portable/$(VENDOR)/$(CHIP_FAMILY)/ \
+
+TINY_USB_OBJS += \
+tinyusb/src/common/tusb_fifo.o \
+tinyusb/src/device/usbd.o \
+tinyusb/src/device/usbd_control.o \
+tinyusb/src/class/audio/audio_device.o \
+tinyusb/src/class/cdc/cdc_device.o \
+tinyusb/src/class/dfu/dfu_rt_device.o \
+tinyusb/src/class/hid/hid_device.o \
+tinyusb/src/class/midi/midi_device.o \
+tinyusb/src/class/msc/msc_device.o \
+tinyusb/src/class/net/net_device.o \
+tinyusb/src/class/usbtmc/usbtmc_device.o \
+tinyusb/src/class/vendor/vendor_device.o \
+tinyusb/src/portable/$(VENDOR)/$(CHIP_FAMILY)/dcd_$(CHIP_FAMILY).o \
+usb_descriptors.o \
+tinyusb/src/tusb.o \
+T1.o \
+
+TINY_USB_OBJS_AS_ARGS += \
+"tinyusb/src/tusb.o" \
+"tinyusb/src/common/tusb_fifo.o" \
+"tinyusb/src/device/usbd.o" \
+"tinyusb/src/device/usbd_control.o" \
+"tinyusb/src/class/audio/audio_device.o" \
+"tinyusb/src/class/cdc/cdc_device.o" \
+"tinyusb/src/class/dfu/dfu_rt_device.o" \
+"tinyusb/src/class/hid/hid_device.o" \
+"tinyusb/src/class/midi/midi_device.o" \
+"tinyusb/src/class/msc/msc_device.o" \
+"tinyusb/src/class/net/net_device.o" \
+"tinyusb/src/class/usbtmc/usbtmc_device.o" \
+"tinyusb/src/class/vendor/vendor_device.o" \
+"tinyusb/src/portable/$(VENDOR)/$(CHIP_FAMILY)/dcd_$(CHIP_FAMILY).o" \
+"usb_descriptors.o" \
+"T1.o" \
+
+TINY_USB_DEPS += \
+"tinyusb/src/tusb.d" \
+"tinyusb/src/common/tusb_fifo.d" \
+"tinyusb/src/device/usbd.d" \
+"tinyusb/src/device/usbd_control.d" \
+"tinyusb/src/class/audio/audio_device.d" \
+"tinyusb/src/class/cdc/cdc_device.d" \
+"tinyusb/src/class/dfu/dfu_rt_device.d" \
+"tinyusb/src/class/hid/hid_device.d" \
+"tinyusb/src/class/midi/midi_device.d" \
+"tinyusb/src/class/msc/msc_device.d" \
+"tinyusb/src/class/net/net_device.d" \
+"tinyusb/src/class/usbtmc/usbtmc_device.d" \
+"tinyusb/src/class/vendor/vendor_device.d" \
+"tinyusb/src/portable/$(VENDOR)/$(CHIP_FAMILY)/dcd_$(CHIP_FAMILY).d" \
+"usb_descriptors.d" \
+
+TINY_USB_FLAGS += \
+  -mthumb \
+  -mabi=aapcs-linux \
+  -mcpu=cortex-m0plus \
+  -nostdlib -nostartfiles \
+  -D__SAMD11C14A__ \
+  -DCONF_DFLL_OVERWRITE_CALIBRATION=0 \
+  -DOSC32K_OVERWRITE_CALIBRATION=0 \
+  -DCFG_TUSB_MCU=OPT_MCU_SAMD11
+
+# List the object files
 
 # List the object files
 OBJS +=  \
 hal/src/hal_io.o \
-hpl/wdt/hpl_wdt.o \
-usb/class/hid/device/hiddf_generic.o \
-usb/class/cdc/device/cdcdf_acm.o \
+hal/src/hal_spi_s_async.o \
 hal/utils/src/utils_syscalls.o \
-usb/class/msc/device/mscdf.o \
-hal/src/hal_timer.o \
-hpl/usb/hpl_usb.o \
-usb/class/vendor/device/vendordf.o \
 hal/src/hal_delay.o \
-hpl/sysctrl/hpl_sysctrl.o \
+hpl/pm/hpl_pm.o \
 hpl/core/hpl_init.o \
-hal/src/hal_wdt.o \
+hal/utils/src/utils_list.o \
 hpl/core/hpl_core_m0plus_base.o \
 hal/utils/src/utils_assert.o \
 hpl/dmac/hpl_dmac.o \
-hpl/pm/hpl_pm.o \
-usb/class/hid/device/hiddf_keyboard.o \
-hal/src/hal_usart_sync.o \
-hpl/dac/hpl_dac.o \
+hpl/sysctrl/hpl_sysctrl.o \
 hpl/gclk/hpl_gclk.o \
-usb/usb_protocol.o \
 hal/src/hal_init.o \
-hal/src/hal_usb_device.o \
 main.o \
-hal/utils/src/utils_list.o \
-hpl/rtc/hpl_rtc.o \
 examples/driver_examples.o \
 driver_init.o \
-hal/src/hal_adc_sync.o \
-hal/src/hal_dac_sync.o \
+hal/src/hal_usart_async.o \
 hpl/sercom/hpl_sercom.o \
+hal/utils/src/utils_ringbuffer.o \
 hal/src/hal_gpio.o \
-usb/class/hid/device/hiddf_mouse.o \
 hal/utils/src/utils_event.o \
 hal/src/hal_sleep.o \
 gcc/system_samd11.o \
-usb_start.o \
-atmel_start.o \
-usb/device/usbdc.o \
 gcc/gcc/startup_samd11.o \
 hal/src/hal_atomic.o \
-hpl/adc/hpl_adc.o
+# hpl/usb/hpl_usb.o \
+# hal/src/hal_usb_device.o \
 
 OBJS_AS_ARGS +=  \
 "hal/src/hal_io.o" \
-"hpl/wdt/hpl_wdt.o" \
-"usb/class/hid/device/hiddf_generic.o" \
-"usb/class/cdc/device/cdcdf_acm.o" \
+"hal/src/hal_spi_s_async.o" \
 "hal/utils/src/utils_syscalls.o" \
-"usb/class/msc/device/mscdf.o" \
-"hal/src/hal_timer.o" \
-"hpl/usb/hpl_usb.o" \
-"usb/class/vendor/device/vendordf.o" \
 "hal/src/hal_delay.o" \
-"hpl/sysctrl/hpl_sysctrl.o" \
+"hpl/pm/hpl_pm.o" \
 "hpl/core/hpl_init.o" \
-"hal/src/hal_wdt.o" \
+"hal/utils/src/utils_list.o" \
 "hpl/core/hpl_core_m0plus_base.o" \
 "hal/utils/src/utils_assert.o" \
 "hpl/dmac/hpl_dmac.o" \
-"hpl/pm/hpl_pm.o" \
-"usb/class/hid/device/hiddf_keyboard.o" \
-"hal/src/hal_usart_sync.o" \
-"hpl/dac/hpl_dac.o" \
+"hpl/sysctrl/hpl_sysctrl.o" \
 "hpl/gclk/hpl_gclk.o" \
-"usb/usb_protocol.o" \
 "hal/src/hal_init.o" \
-"hal/src/hal_usb_device.o" \
 "main.o" \
-"hal/utils/src/utils_list.o" \
-"hpl/rtc/hpl_rtc.o" \
 "examples/driver_examples.o" \
 "driver_init.o" \
-"hal/src/hal_adc_sync.o" \
-"hal/src/hal_dac_sync.o" \
+"hal/src/hal_usart_async.o" \
 "hpl/sercom/hpl_sercom.o" \
+"hal/utils/src/utils_ringbuffer.o" \
 "hal/src/hal_gpio.o" \
-"usb/class/hid/device/hiddf_mouse.o" \
 "hal/utils/src/utils_event.o" \
 "hal/src/hal_sleep.o" \
 "gcc/system_samd11.o" \
-"usb_start.o" \
-"atmel_start.o" \
-"usb/device/usbdc.o" \
 "gcc/gcc/startup_samd11.o" \
 "hal/src/hal_atomic.o" \
-"hpl/adc/hpl_adc.o"
+# "hpl/usb/hpl_usb.o" \
+# "hal/src/hal_usb_device.o" \
+
+OBJS += $(TINY_USB_OBJS)
+OBJS_AS_ARGS += $(TINY_USB_OBJS_AS_ARGS)
 
 # List the directories containing header files
 DIR_INCLUDES +=  \
@@ -151,86 +194,58 @@ DIR_INCLUDES +=  \
 -I"../examples" \
 -I"../hal/include" \
 -I"../hal/utils/include" \
--I"../hpl/adc" \
 -I"../hpl/core" \
--I"../hpl/dac" \
 -I"../hpl/dmac" \
 -I"../hpl/gclk" \
 -I"../hpl/pm" \
 -I"../hpl/port" \
--I"../hpl/rtc" \
 -I"../hpl/sercom" \
 -I"../hpl/sysctrl" \
 -I"../hpl/usb" \
--I"../hpl/wdt" \
 -I"../hri" \
 -I"../" \
--I"../config" \
--I"../usb" \
--I"../usb/class/cdc" \
--I"../usb/class/cdc/device" \
--I"../usb/class/composite/device" \
--I"../usb/class/hid" \
--I"../usb/class/hid/device" \
--I"../usb/class/hub" \
--I"../usb/class/msc" \
--I"../usb/class/msc/device" \
--I"../usb/class/vendor" \
--I"../usb/class/vendor/device" \
--I"../usb/device" \
--I"../" \
 -I"../CMSIS/Core/Include" \
--I"../include"
+-I"../include" \
+-I"../tinyusb" \
+-I"../tinyusb/src" \
+-I"../tinyusb/hw/bsp" \
+
 
 # List the dependency files
 DEPS := $(OBJS:%.o=%.d)
 
 DEPS_AS_ARGS +=  \
-"hpl/wdt/hpl_wdt.d" \
-"hal/utils/src/utils_event.d" \
+"hal/src/hal_spi_s_async.d" \
 "hal/src/hal_io.d" \
-"usb/class/hid/device/hiddf_generic.d" \
+"hal/src/hal_gpio.d" \
 "hal/utils/src/utils_syscalls.d" \
-"usb/class/cdc/device/cdcdf_acm.d" \
-"usb/class/hid/device/hiddf_mouse.d" \
-"usb/class/vendor/device/vendordf.d" \
-"hpl/usb/hpl_usb.d" \
-"usb/class/msc/device/mscdf.d" \
-"hal/src/hal_timer.d" \
 "hpl/core/hpl_core_m0plus_base.d" \
-"hal/src/hal_wdt.d" \
+"hal/utils/src/utils_list.d" \
 "hpl/dmac/hpl_dmac.d" \
 "hal/utils/src/utils_assert.d" \
 "hal/src/hal_delay.d" \
 "hpl/core/hpl_init.d" \
 "hpl/sysctrl/hpl_sysctrl.d" \
-"usb/usb_protocol.d" \
 "hpl/gclk/hpl_gclk.d" \
-"hal/src/hal_usb_device.d" \
-"usb_start.d" \
 "hal/src/hal_init.d" \
-"hal/src/hal_usart_sync.d" \
-"usb/class/hid/device/hiddf_keyboard.d" \
-"hpl/dac/hpl_dac.d" \
 "driver_init.d" \
-"hal/src/hal_adc_sync.d" \
+"hal/src/hal_usart_async.d" \
 "main.d" \
 "examples/driver_examples.d" \
-"hpl/rtc/hpl_rtc.d" \
-"hal/utils/src/utils_list.d" \
 "gcc/system_samd11.d" \
 "hal/src/hal_sleep.d" \
+"hal/utils/src/utils_ringbuffer.d" \
 "hpl/sercom/hpl_sercom.d" \
-"hal/src/hal_dac_sync.d" \
-"hal/src/hal_gpio.d" \
+"hal/utils/src/utils_event.d" \
 "hal/src/hal_atomic.d" \
 "gcc/gcc/startup_samd11.d" \
-"usb/device/usbdc.d" \
 "hpl/pm/hpl_pm.d" \
-"hpl/adc/hpl_adc.d" \
-"atmel_start.d"
+# "hpl/usb/hpl_usb.d" \
+# "hal/src/hal_usb_device.d" \
 
-OUTPUT_FILE_NAME :=AtmelStart
+DEPS_AS_ARGS += $(TINY_USB_DEPS)
+
+OUTPUT_FILE_NAME :=T1-samd
 QUOTE := "
 OUTPUT_FILE_PATH +=$(OUTPUT_FILE_NAME).elf
 OUTPUT_FILE_PATH_AS_ARGS +=$(OUTPUT_FILE_NAME).elf
@@ -250,7 +265,7 @@ $(OUTPUT_FILE_PATH): $(OBJS)
 	$(QUOTE)arm-none-eabi-gcc$(QUOTE) -o $(OUTPUT_FILE_NAME).elf $(OBJS_AS_ARGS) -Wl,--start-group -lm -Wl,--end-group -mthumb \
 -Wl,-Map="$(OUTPUT_FILE_NAME).map" --specs=nano.specs -Wl,--gc-sections -mcpu=cortex-m0plus \
  \
--T"../gcc/gcc/samd11d14am_flash.ld" \
+-T"../gcc/gcc/samd11c14a_flash.ld" \
 -L"../gcc/gcc"
 	@echo Finished building target: $@
 
@@ -263,18 +278,12 @@ $(OUTPUT_FILE_PATH): $(OBJS)
 	"arm-none-eabi-objdump" -h -S "$(OUTPUT_FILE_NAME).elf" > "$(OUTPUT_FILE_NAME).lss"
 	"arm-none-eabi-size" "$(OUTPUT_FILE_NAME).elf"
 
-	
-
 # Compiler targets
-
-
-
-
 %.o: %.c
 	@echo Building file: $<
 	@echo ARM/GNU C Compiler
-	$(QUOTE)arm-none-eabi-gcc$(QUOTE) -x c -mthumb -DDEBUG -Os -ffunction-sections -mlong-calls -g3 -Wall -c -std=gnu99 \
--D__SAMD11D14AM__ -mcpu=cortex-m0plus  \
+	$(QUOTE)arm-none-eabi-gcc$(QUOTE) -x c $(TINY_USB_FLAGS) -mthumb -DDEBUG -Os -ffunction-sections -mlong-calls -g3 -Wall -c -std=gnu99 \
+-D__SAMD11C14A__ -mcpu=cortex-m0plus  \
 $(DIR_INCLUDES) \
 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"  -o "$@" "$<"
 	@echo Finished building: $<
@@ -282,8 +291,8 @@ $(DIR_INCLUDES) \
 %.o: %.s
 	@echo Building file: $<
 	@echo ARM/GNU Assembler
-	$(QUOTE)arm-none-eabi-as$(QUOTE) -x c -mthumb -DDEBUG -Os -ffunction-sections -mlong-calls -g3 -Wall -c -std=gnu99 \
--D__SAMD11D14AM__ -mcpu=cortex-m0plus  \
+	$(QUOTE)arm-none-eabi-as$(QUOTE) -x c $(TINY_USB_FLAGS) -mthumb -DDEBUG -Os -ffunction-sections -mlong-calls -g3 -Wall -c -std=gnu99 \
+-D__SAMD11C14A__ -mcpu=cortex-m0plus  \
 $(DIR_INCLUDES) \
 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"  -o "$@" "$<"
 	@echo Finished building: $<
@@ -291,8 +300,8 @@ $(DIR_INCLUDES) \
 %.o: %.S
 	@echo Building file: $<
 	@echo ARM/GNU Preprocessing Assembler
-	$(QUOTE)arm-none-eabi-gcc$(QUOTE) -x c -mthumb -DDEBUG -Os -ffunction-sections -mlong-calls -g3 -Wall -c -std=gnu99 \
--D__SAMD11D14AM__ -mcpu=cortex-m0plus  \
+	$(QUOTE)arm-none-eabi-gcc$(QUOTE) -x c $(TINY_USB_FLAGS) -mthumb -DDEBUG -Os -ffunction-sections -mlong-calls -g3 -Wall -c -std=gnu99 \
+-D__SAMD11C14A__ -mcpu=cortex-m0plus  \
 $(DIR_INCLUDES) \
 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"  -o "$@" "$<"
 	@echo Finished building: $<
@@ -306,6 +315,10 @@ endif
 
 $(SUB_DIRS):
 	$(MK_DIR) "$@"
+
+flash: all
+	@edbg -b -t samd11 -e -pv -f $(OUTPUT_FILE_NAME).bin
+
 
 clean:
 	rm -f $(OBJS_AS_ARGS)
